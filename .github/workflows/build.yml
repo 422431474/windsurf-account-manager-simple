@@ -283,6 +283,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Configure Cargo for cross-compilation
+        run: |
+          mkdir -p ~/.cargo
+          cat >> ~/.cargo/config.toml << EOF
+          [target.aarch64-unknown-linux-gnu]
+          linker = "aarch64-linux-gnu-gcc"
+          EOF
+
       - name: Build Tauri App (Linux ARM64)
         uses: tauri-apps/tauri-action@v0
         env:
