@@ -262,7 +262,7 @@ jobs:
           echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports jammy main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list
           echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports jammy-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list
           sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.1-dev:arm64 libappindicator3-dev:arm64 librsvg2-dev:arm64 patchelf || true
+          sudo apt-get install -y libwebkit2gtk-4.1-dev:arm64 libappindicator3-dev:arm64 librsvg2-dev:arm64 libssl-dev:arm64 patchelf || true
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -291,6 +291,10 @@ jobs:
           CXX: aarch64-linux-gnu-g++
           PKG_CONFIG_PATH: /usr/lib/aarch64-linux-gnu/pkgconfig
           PKG_CONFIG_SYSROOT_DIR: /
+          PKG_CONFIG_ALLOW_CROSS: 1
+          OPENSSL_DIR: /usr
+          OPENSSL_INCLUDE_DIR: /usr/include/aarch64-linux-gnu
+          OPENSSL_LIB_DIR: /usr/lib/aarch64-linux-gnu
         with:
           args: --target aarch64-unknown-linux-gnu
 
