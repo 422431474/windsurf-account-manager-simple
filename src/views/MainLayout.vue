@@ -180,6 +180,15 @@
             />
           </el-tooltip>
           
+          <el-tooltip content="批量获取试用链接" placement="bottom" v-if="accountsStore.selectedAccounts.size > 0">
+            <el-button
+              type="success"
+              :icon="Link"
+              circle
+              @click="showBatchTrialLinkDialog = true"
+            />
+          </el-tooltip>
+          
           <!-- 导出选中账号 -->
           <el-tooltip content="导出选中账号" placement="bottom" v-if="accountsStore.selectedAccounts.size > 0">
             <el-button
@@ -421,6 +430,12 @@
     <!-- 虚拟卡生成对话框 -->
     <CardGeneratorDialog v-model="showCardGeneratorDialog" />
     
+    <!-- 批量获取试用链接对话框 -->
+    <BatchTrialLinkDialog 
+      v-model="showBatchTrialLinkDialog"
+      :selected-account-ids="Array.from(accountsStore.selectedAccounts)"
+    />
+    
     <!-- 账单对话框（传入当前查看的账号ID和数据） -->
     <BillingDialog 
       v-if="uiStore.currentViewingAccountId"
@@ -589,7 +604,8 @@ import {
   Timer,
   Switch,
   SortUp,
-  SortDown
+  SortDown,
+  Link
 } from '@element-plus/icons-vue';
 import { useAccountsStore, useSettingsStore, useUIStore } from '@/store';
 import { apiService, settingsApi, accountApi } from '@/api';
@@ -609,6 +625,7 @@ import BatchUpdatePlanDialog from '@/components/BatchUpdatePlanDialog.vue';
 import TagManageDialog from '@/components/TagManageDialog.vue';
 import AutoResetDialog from '@/components/AutoResetDialog.vue';
 import CardGeneratorDialog from '@/components/CardGeneratorDialog.vue';
+import BatchTrialLinkDialog from '@/components/BatchTrialLinkDialog.vue';
 
 const accountsStore = useAccountsStore();
 const settingsStore = useSettingsStore();
@@ -631,6 +648,7 @@ const batchGroupTarget = ref('');
 const isBatchUpdatingGroup = ref(false);
 const showAutoResetDialog = ref(false);
 const showCardGeneratorDialog = ref(false);
+const showBatchTrialLinkDialog = ref(false);
 
 // 排序相关
 const currentSortField = ref<string>('custom');
