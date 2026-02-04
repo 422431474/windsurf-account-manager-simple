@@ -2,6 +2,9 @@ name: Build & Release
 
 on:
   workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
 
 jobs:
   # 获取版本号
