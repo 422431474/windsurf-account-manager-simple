@@ -49,6 +49,7 @@
 import { ref, watch, onUnmounted, nextTick } from 'vue';
 import { Loading, CircleCheck, CircleClose } from '@element-plus/icons-vue';
 
+// 官方 Site Key（仅官方域名可用）
 const TURNSTILE_SITE_KEY = '0x4AAAAAAA447Bur1xJStKg5';
 
 const props = defineProps<{
@@ -148,16 +149,27 @@ async function loadTurnstile() {
     await nextTick();
     
     if (turnstileRef.value) {
+      // 调试信息
+      console.log('[Turnstile] Platform:', navigator.platform);
+      console.log('[Turnstile] UserAgent:', navigator.userAgent);
+      console.log('[Turnstile] Current URL:', window.location.href);
+      console.log('[Turnstile] Origin:', window.location.origin);
+      console.log('[Turnstile] Site Key:', TURNSTILE_SITE_KEY);
+      
       widgetId.value = turnstile.render(turnstileRef.value, {
         sitekey: TURNSTILE_SITE_KEY,
         theme: 'light',
         callback: (token: string) => {
-          console.log('[Turnstile] Verification success');
+          console.log('[Turnstile] Verification success, token:', token.substring(0, 30) + '...');
           turnstileToken.value = token;
           status.value = 'success';
         },
-        'error-callback': () => {
-          console.error('[Turnstile] Verification failed');
+        'error-callback': (errorCode: string) => {
+          console.error('[Turnstile] Verification failed!');
+          console.error('[Turnstile] Error code:', errorCode);
+          console.error('[Turnstile] URL:', window.location.href);
+          console.error('[Turnstile] Origin:', window.location.origin);
+          console.error('[Turnstile] Site Key used:', TURNSTILE_SITE_KEY);
           status.value = 'error';
         },
         'expired-callback': () => {
