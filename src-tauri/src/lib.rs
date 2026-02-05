@@ -55,6 +55,12 @@ pub fn run() {
             if let Some(window) = app.get_webview_window("main") {
                 let title = format!("windsurf-account-manager-simple v{}", version);
                 window.set_title(&title).ok();
+                
+                // 开发模式下自动打开 DevTools
+                #[cfg(debug_assertions)]
+                {
+                    window.open_devtools();
+                }
             }
             
             Ok(())
@@ -152,6 +158,7 @@ pub fn run() {
             commands::get_app_version,
             commands::get_app_title,
             commands::reset_http_client,
+            commands::open_devtools,
             
             // 无感换号补丁命令
             commands::get_windsurf_path,

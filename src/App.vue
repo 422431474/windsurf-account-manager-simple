@@ -26,16 +26,39 @@ const disableContextMenu = (e: MouseEvent) => {
   return false;
 };
 
-// 禁用调试快捷键
+// 开发模式检测
+const isDev = import.meta.env.DEV;
+
+// 打开 DevTools
+const openDevTools = async () => {
+  try {
+    await invoke('open_devtools');
+    console.log('[App] DevTools opened');
+  } catch (e) {
+    console.error('[App] Failed to open DevTools:', e);
+  }
+};
+
+// 禁用调试快捷键（生产环境）
 const disableDebugKeys = (e: KeyboardEvent) => {
-  // 禁用F12
+  // 开发模式下允许 F12 打开 DevTools
   if (e.key === 'F12') {
+    if (isDev) {
+      e.preventDefault();
+      openDevTools();
+      return false;
+    }
     e.preventDefault();
     return false;
   }
   
-  // 禁用Ctrl+Shift+I (开发者工具)
-  if (e.ctrlKey && e.shiftKey && e.key === 'I') {
+  // Ctrl/Cmd+Shift+I (开发者工具) - 开发模式允许
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'I') {
+    if (isDev) {
+      e.preventDefault();
+      openDevTools();
+      return false;
+    }
     e.preventDefault();
     return false;
   }

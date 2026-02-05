@@ -1,4 +1,4 @@
-use tauri::{command, AppHandle};
+use tauri::{command, AppHandle, Manager};
 use serde_json::json;
 use crate::services;
 
@@ -30,4 +30,18 @@ pub async fn reset_http_client() -> Result<serde_json::Value, String> {
         "success": true,
         "message": "HTTP客户端已重置"
     }))
+}
+
+/// 打开开发者工具
+#[command]
+pub async fn open_devtools(app: AppHandle) -> Result<serde_json::Value, String> {
+    if let Some(window) = app.get_webview_window("main") {
+        window.open_devtools();
+        Ok(json!({
+            "success": true,
+            "message": "DevTools已打开"
+        }))
+    } else {
+        Err("找不到主窗口".to_string())
+    }
 }
