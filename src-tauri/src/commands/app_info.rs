@@ -32,16 +32,25 @@ pub async fn reset_http_client() -> Result<serde_json::Value, String> {
     }))
 }
 
-/// 打开开发者工具
+/// 打开开发者工具（仅开发模式可用）
 #[command]
 pub async fn open_devtools(app: AppHandle) -> Result<serde_json::Value, String> {
-    if let Some(window) = app.get_webview_window("main") {
-        window.open_devtools();
-        Ok(json!({
-            "success": true,
-            "message": "DevTools已打开"
-        }))
-    } else {
-        Err("找不到主窗口".to_string())
+    #[cfg(debug_assertions)]
+    {
+        if let Some(window) = app.get_webview_window("main") {
+            window.open_devtools();
+            return Ok(json!({
+                "success": true,
+                "message": "DevTools已打开"
+            }));
+        } else {
+            return Err("找不到主窗口".to_string());
+        }
+    }
+    
+    #[cfg(not(debug_assertions))]
+    {
+        let _ = app;
+        Err("DevTools仅在开发模式下可用".to_string())
     }
 }
